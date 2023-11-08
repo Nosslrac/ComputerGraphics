@@ -223,6 +223,7 @@ bool handleEvents(void)
 	// check new events (keyboard among other)
 	SDL_Event event;
 	bool quitEvent = false;
+	const float viewPointOptions[3] = { 5.0f, 10.0f, 20.0f };
 
 	while(SDL_PollEvent(&event))
 	{
@@ -252,6 +253,9 @@ bool handleEvents(void)
 			g_prevMouseCoords.x = x;
 			g_prevMouseCoords.y = y;
 		}
+		else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_b) {
+			viewPoint = (viewPoint + 1) % 3;
+		}
 
 		if(!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)))
 		{
@@ -280,7 +284,7 @@ bool handleEvents(void)
 	// implement camera controls based on key states
 		const float speed = 50.0f;
 		const float rotateSpeed = 5.f;
-		const float viewPointOptions[3] = { 5.0f, 10.0f, 20.0f};
+		
 
 		if (!ImGui::GetIO().WantCaptureKeyboard)
 		{
@@ -319,10 +323,6 @@ bool handleEvents(void)
 			if (state[SDL_SCANCODE_RIGHT])
 			{
 				R = glm::rotate(-rotateSpeed * deltaTime, glm::vec3(0, 1, 0)) * R;
-			}
-			if (state[SDL_SCANCODE_B])
-			{
-				viewPoint = (viewPoint + 1) % 3;
 			}
 			cameraPosition = (T * R)[3] + vec4(0.0f, 5.0f, 0.0f, 0.0f) - vec4(car_forward * viewPointOptions[viewPoint], 0);
 			cameraDirection = car_forward;
